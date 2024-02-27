@@ -1,0 +1,51 @@
+
+# Example pod.yml
+  --- BEGIN ---
+
+  apiVersion: v1
+kind: Pod
+metadata:
+  name: example-pod
+  labels:
+    app: myapp
+spec:
+  containers:
+  - name: my-container
+    image: my-image:latest
+    ports:
+    - containerPort: 80
+--- END ---
+
+#Example deployment.yml
+--- BEGIN ---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: example-deployment
+  labels:
+    app: myapp
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+      - name: my-container
+        image: my-image:latest
+        ports:
+        - containerPort: 80
+--- END ----
+
+
+# Deploy
+  
+kubectl apply -f pod.yml
+kubectl apply -f deployment.yml
+
+kubectl get pods -o wide
