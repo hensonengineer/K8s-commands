@@ -1,0 +1,8 @@
+# drain a node
+kubectl drain <node name> --ignore-daemonsets
+
+# Get a node ready
+kubectl uncordon <node name>
+
+
+
