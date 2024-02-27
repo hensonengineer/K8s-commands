@@ -1,0 +1,93 @@
+### Kubectl ###
+
+
+# Basic Cluster Management
+## Get cluster information
+kubectl cluster-info
+
+## List all nodes in the cluster
+kubectl get nodes
+
+# Working with Pods
+## Create a pod
+kubectl run <pod-name> --image=<image-name>
+
+## Delete a pod
+kubectl delete pod <pod-name>
+
+# Managing Deployments
+## Create a deployment
+kubectl create deployment <deployment-name> --image=<image-name>
+
+## Get deployments
+kubectl get deployments
+
+## Scale a deployment
+kubectl scale deployment <deployment-name> --replicas=<num>
+
+## Update a deployment (typically done by applying a new YAML file)
+kubectl apply -f <file-name>.yaml
+
+## Rollback a deployment
+kubectl rollout undo deployment <deployment-name>
+
+# Services and Networking
+## Expose a deployment as a service
+kubectl expose deployment <deployment-name> --type=<service-type> --port=<port>
+
+## Get services
+kubectl get services
+
+# Configuration and Secrets
+## Create a config map
+kubectl create configmap <map-name> --from-literal=<key>=<value>
+
+## Create a secret
+kubectl create secret generic <secret-name> --from-literal=<key>=<value>
+
+# Logs and Debugging
+## View logs for a specific pod
+kubectl logs <pod-name>
+
+## Execute a command in a container within a pod
+kubectl exec -it <pod-name> -- <command>
+
+# Namespaces
+## Create a namespace
+kubectl create namespace <namespace-name>
+
+## List namespaces
+kubectl get namespaces
+
+
+### kubeadm ###
+
+
+# Initializing a Kubernetes Cluster
+kubeadm init --pod-network-cidr=<network-cidr>
+
+# Joining a Node to the Cluster
+kubeadm join <master-node-ip>:<master-node-port> --token <token> --discovery-token-ca-cert-hash sha256:<hash>
+
+# Generating a New Token for Joining Nodes
+kubeadm token create --print-join-command
+
+# Resetting a Node
+kubeadm reset
+
+# Upgrading the Cluster
+## Plan the upgrade (check which versions are available)
+kubeadm upgrade plan
+
+## Apply the upgrade
+kubeadm upgrade apply <version>
+
+# Configuring Kubernetes Control Plane with kubeadm Config File
+## Example: Init cluster with a configuration file
+kubeadm init --config=config.yaml
+
+# Checking Cluster Status
+## After initializing a cluster, you might want to check its status with kubectl commands rather than kubeadm
+kubectl get nodes
+kubectl cluster-info
+
