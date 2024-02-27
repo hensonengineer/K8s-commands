@@ -1,0 +1,37 @@
+# Node Health and Information 
+kubectl get nodes
+kubectl describe node <node-name>
+kubectl get namespaces
+
+# Pod Info 
+kubectl get pods
+kubectl get pods --namespace [namespace]
+kubectl get pods --namespace kube-system
+kubectl get pods --all-namespaces
+
+# Building
+kubectl create namespace [namespace] 
+
+# Kube Exec
+kubectl exec -it <pod-name> -- /bin/bash
+kubectl exec -it <pod-name> -- nslookup <service-name>
+
+# Troubelshooting
+kubectl cluster-info
+
+kubectl logs <pod-name> -n <namespace>
+kubectl logs <pod-name> -c <container-name> -n <namespace>
+
+kubectl get services -n <namespace>
+kubectl describe service <service-name> -n <namespace>
+
+kubectl get deployments -n <namespace>
+kubectl describe deployment <deployment-name> -n <namespace>
+kubectl get rs -n <namespace>  # ReplicaSets
+
+
+# Need a Metrics Server
+kubectl top nodes
+kubectl top pods --all-namespaces
+
+
