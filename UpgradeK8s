@@ -1,0 +1,68 @@
+#### Upgrade single node at a time; starting on Control from 1.27.0-00 to 1.27.2-00 ####
+
+### Control Node ###
+
+kubectl drain [nodename] --ignore-deamonsets
+
+## kubeadm upgrade on control node ##
+
+sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubeadm=1.27.2-00
+sudo kubeadm upgrade plan v1.27.2
+sudo kubeadm upgrade apply v1.27.2
+
+## kubelet and kube ctl upgrade on control node ##
+
+sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubelet=1.27.2-00 kubectl=1.27.2-00
+sudo systemctl daemon-reload
+sudo systemctl restart kubelet
+
+## post upgrade check health and version of control node ##
+
+kubectl get componentstatuses
+kubeadm version
+kubelet --version
+kubectl get nodes
+
+## Allow for workloads to resume on Control node ##
+kubectl uncordon [nodename] 
+
+### Worker Nodes ###
+
+#run this from controller for each worker | warning - upgrade only one worker at a time
+kubectl drain [worker nodename] --ignore-daemonsets --force
+
+#run these on the worker(s)
+sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubeadm=1.27.2-00
+sudo kubeadm upgrade node
+sudo apt-get update && sudo apt-get install -y --allow-change-held-packages kubelet=1.27.2-00 kubectl=1.27.2-00
+
+kubeadm version
+kubelet --version
+
+#run this from controller
+kubectl get nodes
+kubectl uncordon [worker-node-name] #only after verifying upgrade
+
+## Post upgrade verify commands commands ##
+# Check the status of all nodes
+kubectl get nodes
+
+# Check the component statuses (Note: May not show all control plane components in newer versions)
+kubectl get componentstatuses
+
+# Check for any system pods that are not running
+kubectl get pods --all-namespaces
+
+# Verify API server connectivity
+kubectl cluster-info
+
+# Check kubelet status on the node
+sudo systemctl status kubelet
+
+# Review kubelet logs
+journalctl -u kubelet
+
+# Validate the versions of Kubernetes components
+kubeadm version
+kubelet --version
+kubectl version
