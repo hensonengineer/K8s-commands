@@ -1,0 +1,44 @@
+
+### Backing up and Restoreing etcd ###
+
+sudo snap install etcd         # version 3.4.22, or
+sudo apt  install etcd-client  # version 3.2.26+dfsg-6ubuntu0.2
+
+## Back up etcd
+
+#get cluster name for verification
+ETCDCTL_API=3 etcdctl get cluster.name \
+>   --endpoints=https://<private-ip>:2379 \
+>   --cacert=/etc/etcd/ssl/etcd-ca.pem \
+>   --cert=/etc/etcd/ssl/etcd-server.crt \
+>   --key=/etc/etcd/ssl/etcd-server.key
+
+#create backup 
+ETCDCTL_API=3 etcdctl snapshot save /home/backups/etcd_backup030324.db \
+>   --endpoints=https://<private-ip>:2379 \
+>   --cacert=/etc/etcd/ssl/etcd-ca.pem \
+>   --cert=/etc/etcd/ssl/etcd-server.crt \
+>   --key=/etc/etcd/ssl/etcd-server.key
+
+
+## restore etcd
+ETCDCTL_API=3 etcdctl snapshot restore /home/backups/etcd_backup030324.db \
+>   --initial-cluster etcd-restore=https://<private-ip>:2380 \ #initial temp cluster
+>   --initial-advertise-peer-urls https://<private-ip>:2380 \  #req settings for temp clsueter
+>   --name etcd-restore \ #temp node name
+>   --data-dir /var/lib/etcd 
+
+#change ownership from root to etcd
+sudo chown -R etcd:etcd /var/lib/etcd
+sudo systemctl start etcd
+
+#get cluster name for verification
+ETCDCTL_API=3 etcdctl get cluster.name \
+>   --endpoints=https://<private-ip>:2379 \
+>   --cacert=/etc/etcd/ssl/etcd-ca.pem \
+>   --cert=/etc/etcd/ssl/etcd-server.crt \
+>   --key=/etc/etcd/ssl/etcd-server.key
+
+
+
+etcdctl snapshot restore <filename> 
