@@ -1,0 +1,27 @@
+### Flags
+
+# -o gives more info [ wide,json,yaml ] 
+kubectl get pods [podname] -o wide
+
+# sort by express to sort pods by node to see which pods are running on which nodes
+kubectl get pods [podname] --sort-by .spec.nodeName
+
+# get system pods
+kubectl get pods -n kube-system
+
+# selector flag allows filter by label
+kubectl get pods -n kube-system --selector k8s-app=calico-node
+
+# useful troubleshooting | lots of info per pod
+ kubectl describe pod [podname] 
+
+### Troubleshoot; finding a container running a pod and then kubectl into  ###
+
+#find a droid, I mean, pod 
+kubectl get pod [pod-name] -o jsonpath='{.spec.containers[*].name}'
+#example kubectl get pod my-pod -o jsonpath='{.spec.containers[*].name}'
+
+# run commands on the pod
+kubectl exec [podname] -c [container name]
+#example: kubectl exec my-pod -c busybox -- ls -hal
+#example: kubectl exec my-pod -c busybox -- echo "Well, Hello There!"
