@@ -34,4 +34,10 @@ kubectl get rs -n <namespace>  # ReplicaSets
 kubectl top nodes
 kubectl top pods --all-namespaces
 
+# Make basic yaml files for deployment
+kubectl create deployment my-dep --image=nginx --dry-run -o yaml >deployment.yml
+
+# Record a deployment
+kubectl scale deployment my-dep --replicas 5 --record
+
 
